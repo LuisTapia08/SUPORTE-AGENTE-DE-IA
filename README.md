@@ -32,15 +32,15 @@ O fluxo principal é:
 
 O projeto usa:
 
-- uma API OpenAI-compatível, como OpenAI, Groq, Gemini ou Ollama;
-- chamadas HTTP para o modelo via `requests`;
-- lógica local para validação e self-consistency.
+- Ollama local como provedor de IA;
+- requisições HTTP para o modelo via `requests`;
+- lógica local para validação, auto-consistência e controle do fluxo.
 
 ## Requisitos
 
 - Python 3.10 ou superior
 - pip
-- acesso a um provedor de IA compatível com OpenAI (ex.: Ollama local, OpenAI, Groq, Gemini)
+- Ollama instalado e em execução localmente
 
 ## Instalação
 
@@ -57,44 +57,19 @@ python -m venv .venv
 pip install requests
 ```
 
-Se você for usar a biblioteca OpenAI diretamente em outra versão do código, também pode instalar:
+3. Verifique se o Ollama está instalado e execute um modelo local, por exemplo:
 
 ```bash
-pip install openai
+ollama run qwen3.5:4b
 ```
 
 ## Variáveis de ambiente
 
-O projeto lê variáveis de ambiente para se conectar ao modelo.
-
-### Exemplo usando Ollama local
+O projeto lê as seguintes variáveis para conectar ao Ollama local:
 
 ```bash
 set LLM_BASE_URL=http://localhost:11434/api/chat
 set LLM_MODEL=qwen3.5:4b
-```
-
-### Exemplo usando OpenAI
-
-```bash
-set LLM_API_KEY=sk-...
-set LLM_MODEL=gpt-4o-mini
-```
-
-### Exemplo usando Groq
-
-```bash
-set LLM_API_KEY=gsk_...
-set LLM_BASE_URL=https://api.groq.com/openai/v1
-set LLM_MODEL=llama-3.3-70b-versatile
-```
-
-### Exemplo usando Gemini
-
-```bash
-set LLM_API_KEY=...
-set LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
-set LLM_MODEL=gemini-2.0-flash
 ```
 
 > Em sistemas Linux/macOS, troque `set` por `export`.
@@ -110,9 +85,9 @@ python agente_suporte_ti.py
 ## Observações importantes
 
 - O código depende da biblioteca `requests` para enviar requisições ao modelo.
-- Se o erro `ModuleNotFoundError: No module named 'requests'` aparecer, significa que a dependência ainda não foi instalada no ambiente correto.
-- Para rodar corretamente, o ambiente Python do VS Code e o ambiente do terminal devem ser o mesmo.
-- O Ollama precisa estar em execução localmente quando usado como backend padrão.
+- Se o erro `ModuleNotFoundError: No module named 'requests'` aparecer, instale a dependência no ambiente correto.
+- O Ollama precisa estar ativo antes de iniciar o programa.
+- Para rodar corretamente, o ambiente Python do VS Code e o ambiente do terminal devem ser os mesmos.
 
 ## Possíveis categorias de suporte
 
