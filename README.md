@@ -15,7 +15,8 @@ O sistema simula um assistente de suporte para a Distribuidora Rio Negro, capaz 
 
 ## Estrutura do projeto
 
-- `agente_suporte_ti.py` — agente principal com lógica de decisão, validação e integração com o modelo;
+- `agente_suporte_ti.py` — versão 1: o modelo devolve um JSON com a ação e o Python decide;
+- `agente_tools.py` — versão 2: function calling com `TOOLS` e `TOOL_FUNCTIONS` (o modelo pede a ferramenta e o Python executa, com confirmação do funcionário);
 - `ferramentas_triagem.py` — funções simuladas para abertura de chamados e notificação;
 - `explicacao_fluxo.md` — descrição do fluxo do agente;
 - `README.md` — documentação do projeto.
@@ -54,37 +55,44 @@ python -m venv .venv
 2. Instale as dependências:
 
 ```bash
-pip install requests
+pip install -r requirements.txt
 ```
 
-3. Verifique se o Ollama está instalado e execute um modelo local, por exemplo:
+3. Deixe o Ollama aberto e confira os modelos instalados:
 
 ```bash
-ollama run qwen3.5:4b
+ollama --version
+ollama list
 ```
 
-## Variáveis de ambiente
+Se não houver nenhum modelo, baixe um (ex.: `ollama pull qwen3:4b`).
 
-O projeto lê as seguintes variáveis para conectar ao Ollama local:
+## Configuração (opcional)
 
-```bash
-set LLM_BASE_URL=http://localhost:11434/api/chat
-set LLM_MODEL=qwen3.5:4b
-```
+Copie `.env.example` para `.env` e ajuste se precisar:
 
-> Em sistemas Linux/macOS, troque `set` por `export`.
+| Variável | Padrão | Para que serve |
+|---|---|---|
+| `OLLAMA_URL` | `http://localhost:11434` | Endereço do Ollama |
+| `LLM_MODEL` | vazio | Modelo a usar; vazio = o programa lista os modelos instalados para você escolher |
+| `LLM_TIMEOUT` | `180` | Segundos de espera por resposta do modelo |
+| `LLM_THINK` | `false` | Liga o "thinking" de modelos como qwen3 (mais lento) |
+| `LLM_KEEP_ALIVE` | `30m` | Tempo que o modelo fica carregado na memória após o último uso |
+
+Ao iniciar, o agente confere se o Ollama está rodando, mostra a versão e confirma o modelo. Se o modelo de `LLM_MODEL` não estiver instalado, ele avisa e deixa escolher outro.
 
 ## Execução
 
 Na pasta do projeto:
 
 ```bash
-python agente_suporte_ti.py
+python agente_suporte_ti.py   # versão 1 (JSON de decisão)
+python agente_tools.py        # versão 2 (function calling)
 ```
 
 ## Observações importantes
 
-- O código depende da biblioteca `requests` para enviar requisições ao modelo.
+- O código depende só da biblioteca `requests` para falar com o Ollama (API `/api/chat`).
 - Se o erro `ModuleNotFoundError: No module named 'requests'` aparecer, instale a dependência no ambiente correto.
 - O Ollama precisa estar ativo antes de iniciar o programa.
 - Para rodar corretamente, o ambiente Python do VS Code e o ambiente do terminal devem ser os mesmos.

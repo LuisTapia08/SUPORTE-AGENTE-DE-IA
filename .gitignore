@@ -45,3 +45,4 @@ dist/
 
 # Local project artifacts
 *.sqlite3
+!.env.example
